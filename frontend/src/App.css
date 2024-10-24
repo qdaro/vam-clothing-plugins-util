@@ -1,0 +1,309 @@
+.App {
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	color-scheme: dark;
+
+	&::after {
+		content: '';
+		position: absolute;
+		z-index: 2;
+		inset: auto 0 0 0;
+		width: 100%;
+		height: 3em;
+		background: linear-gradient(to top, var(--bg) 20%, transparent);
+	}
+
+	& > .dropzones {
+		position: fixed;
+		z-index: 3;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		padding: 1.5em;
+		gap: 1.5em;
+
+		&::before {
+			position: fixed;
+			z-index: 1;
+			inset: 0;
+			content: '';
+			background: var(--bg);
+			opacity: 0.98;
+		}
+
+		&.-force-top {
+			z-index: 100;
+		}
+		&.-hide {
+			display: none;
+		}
+
+		& > .dropzone {
+			flex: 1 1 auto;
+			position: relative;
+			z-index: 10;
+			inset: 0;
+			text-align: center;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			padding: 0 2em;
+
+			& > * {
+				position: relative;
+				z-index: 2;
+			}
+			& > p {
+				opacity: 0.8;
+				margin: 0.5em 0;
+			}
+
+			& code {
+				background: #0004;
+				border-radius: 0.3em;
+				padding: 0 0.2em;
+			}
+
+			&::after {
+				position: absolute;
+				inset: 0;
+				content: '';
+				z-index: 2;
+				border: 2px dashed var(--muted);
+				border-radius: 0.5em;
+			}
+
+			&:is(.wails-drop-target-active)::after {
+				border-color: var(--fg);
+			}
+		}
+	}
+
+	& > .actions {
+		position: fixed;
+		z-index: 11;
+		display: flex;
+		justify-content: flex-end;
+		padding: 0.5em;
+		gap: 0.5em;
+		background: var(--bg);
+		border-bottom-width: 0;
+		border-radius: 0.8em;
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
+
+		&.-left {
+			inset: auto auto 0 0;
+			border-top-left-radius: 0;
+		}
+
+		&.-right {
+			inset: auto 3em 0 auto;
+		}
+
+		& > button {
+			border: 0;
+			padding: 0.4em 0.8em;
+			min-width: 1.8em;
+			border-radius: 0.4em;
+			color: var(--primary-fg);
+			background: var(--primary);
+
+			&:hover {
+				box-shadow: inset 0 0 0 999em #0002;
+			}
+
+			&.-active {
+				background: var(--success);
+				color: var(--success-fg);
+				box-shadow: 0 0 3px 0 var(--success);
+			}
+
+			& > .Icon {
+				width: 0.7em;
+				height: 0.7em;
+			}
+		}
+	}
+
+	& > .messages {
+		padding: 1em;
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0.5em;
+		max-height: 100%;
+		overflow: auto;
+
+		& > * {
+			flex: 0 0 auto;
+		}
+
+		& > :last-child {
+			margin-bottom: 3em;
+		}
+
+		& > hr {
+			height: 4px;
+			margin: 0.5em 2em;
+			border: 0;
+			background: var(--muted);
+			border-radius: 999em;
+		}
+	}
+}
+
+.Message {
+	--fg: var(--fg);
+	--bg: var(--muted);
+
+	max-width: 100%;
+	border-radius: 0.3em;
+	overflow: hidden;
+	color: var(--fg);
+
+	position: relative;
+
+	& > * {
+		position: relative;
+		z-index: 2;
+	}
+
+	&:before {
+		content: '';
+		position: absolute;
+		z-index: 1;
+		inset: 0;
+		background: var(--bg);
+		opacity: 0.4;
+	}
+
+	&.-primary {
+		--fg: var(--primary-fg);
+		--bg: var(--primary);
+	}
+	& .-primary {
+		--fg: var(--primary-fg);
+		--bg: var(--primary-muted);
+	}
+	&.-success {
+		--fg: var(--success-fg);
+		--bg: var(--success);
+	}
+	& .-success {
+		--fg: var(--success-fg);
+		--bg: var(--success-muted);
+	}
+	&.-danger {
+		--fg: var(--danger-fg);
+		--bg: var(--danger);
+	}
+	& .-danger {
+		--fg: var(--danger-fg);
+		--bg: var(--danger-muted);
+	}
+	&.-info {
+		--fg: var(--info-fg);
+		--bg: var(--info);
+	}
+	& .-info {
+		--fg: var(--info-fg);
+		--bg: var(--info-muted);
+	}
+	&.-warning {
+		--fg: var(--warning-fg);
+		--bg: var(--warning);
+	}
+	& .-warning {
+		--fg: var(--warning-fg);
+		--bg: var(--warning-muted);
+	}
+
+	& > hgroup {
+		display: flex;
+		align-items: center;
+		padding: 0 0.4em;
+		gap: 0.4em;
+		border-bottom: 1px dashed #fff4;
+
+		& > .Icon {
+			flex: 0 0 auto;
+			width: 1.3em;
+			height: 1.3em;
+		}
+
+		& > h1 {
+			flex: 1 1 auto;
+			display: block;
+			overflow: hidden;
+			margin: 0;
+			font-size: 1em;
+			font-weight: 500;
+			padding: 0.66em 0;
+			white-space: nowrap;
+			display: flex;
+			mask-image: linear-gradient(to left, transparent, #000 2em);
+			cursor: help;
+		}
+	}
+}
+
+.Notes {
+	margin: 0;
+	padding: 0;
+
+	& > li {
+		color: var(--fg);
+		background: var(--bg);
+		border-top: 2px solid #0004;
+		display: flow-root;
+
+		& > header {
+			display: flex;
+			align-items: center;
+			gap: 0.4em;
+			padding: 0 0.4em;
+
+			& > h2 {
+				flex: 1 1 0;
+				margin: 0;
+				padding: 0.5em 0;
+				font-size: 0.94em;
+				font-weight: normal;
+
+				& code {
+					background: #0004;
+					border-radius: 0.3em;
+					padding: 0 0.2em;
+				}
+			}
+
+			& > .Icon {
+				flex: 0 0 auto;
+				width: 1.3em;
+				height: 1.3em;
+
+				&.arrow {
+					width: 1.5em;
+					height: 1.5em;
+					opacity: 0.5;
+
+					&:is(header:hover *, .-expanded *) {
+						opacity: 1;
+					}
+				}
+			}
+		}
+
+		& > pre {
+			margin: 0 0.3em 0.3em;
+			padding: 0.5em;
+			background: #0002;
+			border-radius: 0.3em;
+			overflow: auto;
+			max-height: 50vh;
+			white-space: pre-wrap;
+		}
+	}
+}

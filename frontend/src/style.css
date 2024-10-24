@@ -1,0 +1,50 @@
+@import 'modern-normalize/modern-normalize.css';
+
+:root {
+	interpolate-size: allow-keywords; /* Enables animation on keywords like auto, min-content, etc*/
+
+	/* Color theme */
+	--bg: lch(11.01 2 283.37);
+	--fg: lch(72.51 18.29 278.82);
+	--muted: lch(16.97 8.57 281.67);
+
+	--primary: lch(50 9.8 267.65);
+	--primary-fg: lch(97 17.25 271.95);
+	--primary-muted: lch(16 7.25 271.95);
+
+	--danger: lch(47 56.54 26.74);
+	--danger-fg: lch(90 18.34 19.54);
+	--danger-muted: lch(16 10 24.07);
+
+	--success: lch(47 56.54 136.74);
+	--success-fg: lch(96 19.37 151.48);
+	--success-muted: lch(16 10 134.07);
+
+	--info: lch(48 40.8 267.65);
+	--info-fg: lch(90 17.25 271.95);
+	--info-muted: lch(16 10 271.95);
+
+	--warning: lch(48 40.8 65.65);
+	--warning-fg: lch(90 17.25 81.95);
+	--warning-muted: lch(16 10 84.95);
+}
+
+html {
+	color: var(--fg);
+	background-color: var(--bg);
+}
+
+* {
+	user-select: none;
+	cursor: default;
+}
+
+:is(code, pre) {
+	user-select: text !important;
+	cursor: text !important;
+}
+
+#app {
+	height: 100vh;
+	text-align: center;
+}

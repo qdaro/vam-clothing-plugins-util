@@ -1,0 +1,16 @@
+{
+	"$schema": "https://wails.io/schemas/config.v2.json",
+	"name": "clothing-plugins-util",
+	"outputfilename": "Clothing Plugins Util",
+	"frontend:install": "npm install",
+	"frontend:build": "npm run build",
+	"frontend:dev:watcher": "npm run dev",
+	"frontend:dev:serverUrl": "auto",
+	"author": {
+		"name": "qdaro",
+		"email": "qdaro@proton.me"
+	},
+	"info": {
+		"productVersion": "1.0.0"
+	}
+}
