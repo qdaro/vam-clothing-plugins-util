@@ -6,6 +6,10 @@ export function Dummy() {
   return window['go']['main']['App']['Dummy']();
 }
 
+export function FixItemsGender(arg1) {
+  return window['go']['main']['App']['FixItemsGender'](arg1);
+}
+
 export function FixPaths(arg1) {
   return window['go']['main']['App']['FixPaths'](arg1);
 }

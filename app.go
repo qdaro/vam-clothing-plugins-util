@@ -140,7 +140,7 @@ func (a *App) InitPaths(paths []string) {
 	}
 }
 
-// Fixes .vaj. clothingplugins, and .vap files for release
+// Fixes .vaj, .clothingplugins, and .vap files for release
 func (a *App) FixPaths(paths []string) {
 	for _, path := range paths {
 		err := filepath.Walk(path, func(walkedPath string, info os.FileInfo, err error) error {
@@ -153,6 +153,10 @@ func (a *App) FixPaths(paths []string) {
 
 			normalizedPath := filepath.ToSlash(walkedPath)
 
+			if lib.ItemGenderExp.MatchString(normalizedPath) {
+				a.message(lib.FixItemGender(normalizedPath))
+			}
+
 			if clothingVajExp.MatchString(normalizedPath) {
 				a.message(lib.FixVaj(normalizedPath, true))
 			} else if clothingCplExp.MatchString(normalizedPath) {
@@ -164,6 +168,35 @@ func (a *App) FixPaths(paths []string) {
 						break
 					}
 				}
+			}
+
+			return nil
+		})
+		if err != nil {
+			a.message(&lib.Message{Icon: lib.Ptr("file"), Title: path, Notes: []lib.Note{{
+				Variant: "danger",
+				Text:    fmt.Sprintf("Failed to walk path \"%s\".", path),
+				Details: lib.Ptr(err.Error()),
+			}}})
+		}
+	}
+}
+
+// Fixes gender in hair & clothing .vam files to match the directory they are in
+func (a *App) FixItemsGender(paths []string) {
+	for _, path := range paths {
+		err := filepath.Walk(path, func(walkedPath string, info os.FileInfo, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				return nil
+			}
+
+			normalizedPath := filepath.ToSlash(walkedPath)
+
+			if lib.ItemGenderExp.MatchString(normalizedPath) {
+				a.message(lib.FixItemGender(normalizedPath))
 			}
 
 			return nil

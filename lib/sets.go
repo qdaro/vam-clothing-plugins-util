@@ -13,7 +13,21 @@ func NewSet[T comparable]() *Set[T] {
 	}
 }
 
+func NewSetFrom[T comparable](source []T) *Set[T] {
+	set := &Set[T]{
+		Data: make(map[T]bool),
+	}
+	set.Add(source...)
+	return set
+}
+
 func (s *Set[T]) Add(elements ...T) {
+	for _, element := range elements {
+		s.Data[element] = true
+	}
+}
+
+func (s *Set[T]) Append(elements []T) {
 	for _, element := range elements {
 		s.Data[element] = true
 	}

@@ -316,6 +316,72 @@ func FixVap(path string) *Message {
 	return &Message{Icon: Ptr("file"), Title: path, Notes: notes}
 }
 
+var ItemGenderExp = regexp.MustCompile(`(?i)^.*/custom/(hair|clothing)/(female|male)/[^/]+/.*\.vam`)
+
+func FixItemGender(vamFilePath string) *Message {
+	matches := ItemGenderExp.FindStringSubmatch(vamFilePath)
+	if matches == nil || len(matches) < 3 {
+		return &Message{Icon: Ptr("file"), Title: vamFilePath, Notes: []Note{{
+			Variant: "danger",
+			Text:    "Invalid hair/clothing item path.",
+			Details: Ptr(fmt.Sprintf("Has to match:\nCustom/(Hair|Clothing)/(Female|Male)/{author}/{item}/{item}.vam\n\nReceived:\n%s", vamFilePath)),
+		}}}
+	}
+
+	notes := []Note{}
+
+	kind := strings.ToUpper(matches[1][0:1]) + strings.ToLower(matches[1][1:])
+	gender := strings.ToUpper(matches[2][0:1]) + strings.ToLower(matches[2][1:])
+	itemTypeByDirectory := kind + gender
+
+	json, err := os.ReadFile(vamFilePath)
+	if err != nil {
+		return &Message{Icon: Ptr("file"), Title: vamFilePath, Notes: []Note{{
+			Variant: "danger", Text: "Couldn't read file.", Details: Ptr(err.Error()),
+		}}}
+	}
+
+	currentItemType := gjson.GetBytes(json, "itemType").String()
+
+	if itemTypeByDirectory == currentItemType {
+		return &Message{Icon: Ptr("file"), Title: vamFilePath, Notes: []Note{{
+			Variant: "info",
+			Text:    "Item type is already correct.",
+			Details: Ptr(currentItemType),
+		}}}
+	}
+
+	newJson, err := sjson.SetBytes(json, "itemType", itemTypeByDirectory)
+	if err != nil {
+		return &Message{Icon: Ptr("file"), Title: vamFilePath, Notes: []Note{{
+			Variant: "danger", Text: "Couldn't set itemType.", Details: Ptr(err.Error()),
+		}}}
+	}
+
+	notes = append(notes, Note{
+		Variant: "success",
+		Text:    fmt.Sprintf("Item type changed to <b>%s</b>.", itemTypeByDirectory),
+	})
+
+	jsonPretty := pretty.PrettyOptions(newJson, &pretty.Options{Indent: "\t"})
+	err = os.WriteFile(vamFilePath, jsonPretty, 0644)
+	if err != nil {
+		notes = append(notes, Note{
+			Variant: "danger",
+			Text:    "Couldn't write .vam file.",
+			Details: Ptr(err.Error()),
+		})
+	} else {
+		notes = append(notes, Note{
+			Variant: "success",
+			Text:    "File saved.",
+			Details: Ptr(string(pretty.Pretty(newJson))),
+		})
+	}
+
+	return &Message{Icon: Ptr("file"), Title: vamFilePath, Notes: notes}
+}
+
 var clothingBaseDirExp = regexp.MustCompile(`(?i)(^.*/custom/clothing/(?:female|male)/[^/]+/[^/]+)`)
 
 // Retrieves UID from `.vam` file associated with passed path (can be clothing item's root directory or any file inside it).

@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef, useMemo} from 'react';
 import './App.css';
-import {GetConfig, SetConfig, InitPaths, FixPaths} from '../wailsjs/go/main/App';
+import {GetConfig, SetConfig, InitPaths, FixPaths, FixItemsGender} from '../wailsjs/go/main/App';
 import * as runtime from '../wailsjs/runtime';
 import {lib} from '../wailsjs/go/models';
 import {useWailsFileDrop} from './lib/wails-drop-interface';
@@ -14,6 +14,7 @@ function App() {
 	const hasMessages = messages.length > 0;
 	const initDropzoneRef = useRef<HTMLDivElement>(null);
 	const fixDropzoneRef = useRef<HTMLDivElement>(null);
+	const fixItemsGenderDropzoneRef = useRef<HTMLDivElement>(null);
 	const [isDraggedOver, setIsDraggedOver] = useState(false);
 	const hideDropzonesTimeout = useRef(0);
 
@@ -53,6 +54,13 @@ function App() {
 		addDivider();
 		setIsDraggedOver(false);
 		FixPaths(paths).then(console.log, console.error);
+	});
+
+	useWailsFileDrop(fixItemsGenderDropzoneRef, (paths) => {
+		console.log('fixItemsGender', paths);
+		addDivider();
+		setIsDraggedOver(false);
+		FixItemsGender(paths).then(console.log, console.error);
 	});
 
 	function handleDragOver() {
@@ -102,13 +110,24 @@ function App() {
 				>
 					<h3>Fix Files for Release</h3>
 					<p>
-						Drop the whole package directory inside <code>AddonPackagesBuilder/</code>, and the util will
-						fix up everything inside it.
+						Drop the whole package directory inside <code>AddonPackagesBuilder/</code> to fix up everything
+						inside it.
 					</p>
 					<p>
-						Ensures the manager in <code>.vaj</code> files is initialized properly (doesn't initialize files
-						that are not), and namespaces clothing plugins' relative paths inside{' '}
-						<code>.clothingplugins</code> and <code>.vap</code> files to the package being prepared.
+						Ensures the manager is initialized properly (doesn't initialize other files), and namespaces
+						relative paths in plugins' storables to the package.
+					</p>
+				</div>
+
+				<div
+					className="dropzone fixItemsGender"
+					ref={fixItemsGenderDropzoneRef}
+					style={{'--wails-drop-target': 'drop'} as React.CSSProperties}
+				>
+					<h3>Fix Items' Gender</h3>
+					<p>
+						Sets all dropped hair's or clothing's <code>itemType</code>s to a correct gender matching the
+						directory they're in.
 					</p>
 				</div>
 			</section>
